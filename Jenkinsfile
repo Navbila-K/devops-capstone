@@ -2,7 +2,6 @@ pipeline {
     agent any
     environment {
         DOCKER_IMAGE = 'navbilak/devops-capstone'
-        APP_EC2     = '172.31.37.190'
     }
     stages {
         stage('Clone') {
@@ -23,23 +22,19 @@ pipeline {
                     credentialsId: 'dockerhub-creds',
                     usernameVariable: 'DOCKER_USER',
                     passwordVariable: 'DOCKER_PASS')]) {
-                    sh "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin"
+                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
                     sh "docker push ${DOCKER_IMAGE}:latest"
                 }
             }
         }
-        stage('Deploy to App EC2') {
+        stage('Deploy Locally') {
             steps {
-                sshagent(['app-ec2-key']) {
-                    sh """
-                        ssh -o StrictHostKeyChecking=no ubuntu@${APP_EC2} '
-                        docker pull ${DOCKER_IMAGE}:latest &&
-                        docker stop capstone-app || true &&
-                        docker rm capstone-app || true &&
-                        docker run -d --name capstone-app -p 80:3000 ${DOCKER_IMAGE}:latest
-                        '
-                    """
-                }
+                sh '''
+                    docker pull navbilak/devops-capstone:latest
+                    docker stop capstone-app || true
+                    docker rm capstone-app || true
+                    docker run -d --name capstone-app -p 80:3000 navbilak/devops-capstone:latest
+                '''
             }
         }
     }
