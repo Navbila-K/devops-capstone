@@ -1,8 +1,8 @@
 pipeline {
     agent any
     environment {
-        DOCKER_IMAGE = 'your-dockerhub-username/devops-capstone'
-        APP_EC2     = 'your-app-ec2-public-ip'
+        DOCKER_IMAGE = 'navbilak/devops-capstone'
+        APP_EC2     = '52.55.224.154'
     }
     stages {
         stage('Clone') {
