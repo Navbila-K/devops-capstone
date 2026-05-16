@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         DOCKER_IMAGE = 'navbilak/devops-capstone'
-        APP_EC2     = '52.55.224.154'
+        APP_EC2     = '172.31.37.190'
     }
     stages {
         stage('Clone') {
